@@ -1,0 +1,26 @@
+{
+    "@element-plus/icons-vue": "^1.1.4",
+    "axios": "^0.26.1",
+    "element-plus": "^2.1.8",
+    "moment": "^2.29.3",
+    "primeflex": "3.3.0",
+    "primeicons": "6.0.1",
+    "primevue": "3.23.0",
+    "v-mask": "^2.3.0",
+    "vee-validate": "4.5.7",
+    "vue": {
+      "requiredVersion":"^3.0.0",
+      "singleton":true
+    },
+    "vue-axios": "^3.4.1",
+    "vue-router": {
+      "singleton": true,
+      "requiredVersion":"^4.0.0-0"
+    },
+    "vue-sweetalert2": "^5.0.2",
+    "vuex": {
+      "requiredVersion": "^4.0.0-0",
+      "singleton": true
+    },
+    "yup": "^0.32.11"
+  }
