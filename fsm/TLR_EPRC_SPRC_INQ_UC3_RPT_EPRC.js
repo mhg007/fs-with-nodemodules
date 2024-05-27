@@ -1,9 +1,9 @@
 const { createMachine, assign, spawn } = require("xstate");
 const { FetchActor, trigger, getToken } = require("@teresol-v2/fsm");
 const service = require("./urls.js");
-const listOfTransMode = service.get("eprcRequestType");
-const listOfidentificationType = service.get("eprcIdentificationType");
-const listOfChannels = service.get("eprcChannel");
+const listOfTransMode = service.get("setupEprcDetail");
+const listOfidentificationType = service.get("setupEprcDetail");
+const listOfChannels = service.get("setupEprcDetail");
 const insertRequestLog = service.get("eprcRequestLog");
 const fetchEprcRpt = service.get("eprcBackOfficeRpt");
 
@@ -57,14 +57,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfTransMode,
               "GET",
               {
-                branchCode: "1025",
+                req_branchCode: "1025",
                 isActive: 1,
-              },
-              {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${await getToken(
-                  process.env.CORE_API_EPRC
-                )}`,
+                res_response : "RequestTypeId,RequestTypeName,RequestTypeDescription,isActive,createdBy,createDate,createTime"
               },
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
@@ -97,14 +92,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfChannels,
               "GET",
               {
-                branchCode: "1025",
+                req_branchCode: "1025",
                 isActive: 1,
-              },
-              {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${await getToken(
-                  process.env.CORE_API_EPRC
-                )}`,
+                res_response: "channelId,channelName,channelDescription,isActive,createdBy,createDate,createTime"
               },
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
@@ -136,14 +126,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfidentificationType,
               "GET",
               {
-                branchCode: "1025",
+                req_branchCode: "1025",
                 isActive: 1,
-              },
-              {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${await getToken(
-                  process.env.CORE_API_EPRC
-                )}`,
+                res_response: "IdentificationTypeId,IdentificationTypeName,IdentificationTypeDescription,isActive,createdBy,createDate,createTime"
               },
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
@@ -180,12 +165,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               insertRequestLog,
               "POST",
               context.searchParameters,
-              {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${await getToken(
-                  process.env.CORE_API_EPRC
-                )}`,
-              },
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
             );
@@ -379,7 +358,11 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       loadData: assign({
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
-          console.log("megaset681: ", context.megaset681);
+
+          console.log("Mode Of Transaction List : ", context.megaset681.receiveTranModeList);
+          console.log("Channel List : ", context.megaset681.receiveChannelList);
+          console.log("Identification Document Type List : ", context.megaset681.listOfStatus);
+
           partialCtxClone.listOfStatus = context.megaset681.listOfStatus;
           partialCtxClone.receiveTranModeList = context.megaset681.receiveTranModeList;
           partialCtxClone.receiveChannelList = context.megaset681.receiveChannelList;
@@ -415,13 +398,8 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       }),
       receiveTranModeList: assign({
         megaset681: (context, event) => {
-          console.log("STEP 2 :  RECEIVE AGENTS ");
-          // console.log(event.result);
           let megaset681Clone = Object.assign({}, context.megaset681);
           megaset681Clone.receiveTranModeList = event.result;
-          console.log("STEP 3 :  Mode of Trans List " + megaset681Clone.receiveTranModeList);
-
-          console.log("STEP 3 : Event Result Value " + event.result);
           return megaset681Clone;
         },
       }),
@@ -430,9 +408,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         megaset681: (context, event) => {
           let megaset681Clone = Object.assign({}, context.megaset681);
           megaset681Clone.receiveRptList = event.result;
-          console.log("STEP 3 :  Mode of EPRC Report List " + megaset681Clone.receiveRptList);
-
-          console.log("STEP 3 : Event Result Value " + event.result);
           return megaset681Clone;
         },
       }),
@@ -440,13 +415,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
       receiveChannelsList: assign({
         megaset681: (context, event) => {
-          console.log("STEP 2 :  RECEIVE AGENTS ");
           // console.log(event.result);
           let megaset681Clone = Object.assign({}, context.megaset681);
           megaset681Clone.receiveChannelList = event.result;
-          console.log("STEP 3 :  Mode of Trans List " + megaset681Clone.receiveChannelList);
-
-          console.log("STEP 3 : Event Result Value " + event.result);
           return megaset681Clone;
         },
       }),
