@@ -4,8 +4,8 @@ const service = require("./urls.js");
 const listOfTransMode = service.get("setupEprcDetail");
 const listOfidentificationType = service.get("setupEprcDetail");
 const listOfChannels = service.get("setupEprcDetail");
-const insertRequestLog = service.get("eprcRequestLog");
-const fetchEprcRpt = service.get("eprcBackOfficeRpt");
+const insertRequestLog = service.get("eprcTransactionDetail");
+const fetchEprcRpt = service.get("eprcTransactionDetail");
 
 /**
  * TODO Change the name of this file to your USE_CASE_IDENTIFIER.js
@@ -33,6 +33,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       receiveidentityTypeList: [],
       insertRequestLogRequest: {},
       searchParameters: {},
+      insertionLogRequestParameters : [],
       validateParameters: {},
       eprcSearchParameters: {},
     },
@@ -51,7 +52,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         entry: [
           "spawnFetch", // API CALLING
           async (context) => {
-            console.log("Step # 1 : FETCH TIE UP + LIST OF AGENT VALUES" + context.modeOfTransList);
             trigger(
               context,
               listOfTransMode,
@@ -86,7 +86,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         entry: [
           "spawnFetch", // API CALLING
           async (context) => {
-            console.log("Step # 1 : FETCH TIE UP + LIST OF AGENT VALUES" + context.modeOfTransList);
             trigger(
               context,
               listOfChannels,
@@ -164,7 +163,8 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               context,
               insertRequestLog,
               "POST",
-              context.searchParameters,
+              // context.searchParameters,
+              context.insertionLogRequestParameters,
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
             );
@@ -268,7 +268,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
     actions: {
       receiveHeader: assign({
         header: (context, event) => {
-          console.log(event.header);
+          console.log("Header Response : ", event.header);
           return event.header;
         },
       }),
@@ -283,6 +283,8 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         searchParameters: (context, event) => {
           console.log("---------");
           console.log("insertRequestLogRequest: ", event.request);
+          context.insertionLogRequestParameters.push(event.request)
+          console.log("Insertion Log Rquests Paramters : ", context.insertionLogRequestParameters);
           return event.request;
         },
       }),
@@ -350,7 +352,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       receiveValidateParameters: assign({
         validateParameters: (context, event) => {
           console.log("---------");
-          console.log("validateAccountNo: ", context.searchParameters.accountNumber);
+          console.log("Response from Service Valid Account Number: ", context.searchParameters.accountNumber);
           return event.request;
         },
       }),
@@ -375,7 +377,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
           partialCtxClone.records = context.megaset681.receiveTranModeList;
-          console.log(context.megaset681.receiveTranModeList);
+          console.log("PRC Info Detail : " , context.megaset681.receiveTranModeList);
           return partialCtxClone;
         },
       }),
@@ -385,7 +387,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
           partialCtxClone.records = context.megaset681.receiveRptList;
-          console.log(context.megaset681.receiveRptList);
+          console.log("PRC Back Office Reprt List : " , context.megaset681.receiveRptList);
           return partialCtxClone;
         },
       }),
@@ -415,7 +417,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
       receiveChannelsList: assign({
         megaset681: (context, event) => {
-          // console.log(event.result);
           let megaset681Clone = Object.assign({}, context.megaset681);
           megaset681Clone.receiveChannelList = event.result;
           return megaset681Clone;
@@ -446,7 +447,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
       receivePostRequest: assign({
         postRequest: (context, event) => {
-          console.log("receive Records", event.result);
+          console.log("Receive Insert Response ", event.result);
           return event.result;
         },
       }),
