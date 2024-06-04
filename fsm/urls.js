@@ -3,9 +3,7 @@ const service = new Service();
 
 service.addList([    
     ["core-api-setup","setupEprcDetail"],
-
-    ["core-api-eprc","eprcRequestLog"],
-    ["core-api-eprc", "eprcBackOfficeRpt"],
+    ["core-api-certificate", "eprcTransactionDetail"],
 ]);
 
 module.exports = service;
