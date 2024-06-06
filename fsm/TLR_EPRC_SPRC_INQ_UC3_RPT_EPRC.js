@@ -201,12 +201,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               fetchEprcRpt,
               "GET",
               context.eprcSearchParameters,
-              {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${await getToken(
-                  process.env.CORE_API_EPRC
-                )}`,
-              },
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
             );
