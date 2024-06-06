@@ -239,6 +239,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     dpChannel: ref(""),
     createdDate: ref(""),
     createdBy: ref(""),
+    ipAddress: ref(""),
 
     tableDataDictionary: ref({}),
 
@@ -1186,18 +1187,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         return;
       }
 
-      // if (ms681.channelDefaultValue.value === "") {
-      //   console.log("inside when channel field is not selected");
-      //   helper.alert("Please Select Channel");
-      //   return;
-      // }
-
-      // if (ms681.branchCodeValue.value === "" && ms681.requestTypeId.value === 1) {
-      //   console.log("inside when branch code field is not entered");
-      //   helper.alert("Branch Code is mandatory");
-      //   return;
-      // }
-
       if (ms681.modeDefaultValue.value === "Account Transfer" &&
         ((ms681.TransactionRadioDefaultValue.value === "Account" && ms681.AccountNumber.value == "") ||
           (ms681.TransactionRadioDefaultValue.value === "iban" && ms681.IBANNumberValue.value == ""))) {
@@ -1205,27 +1194,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         helper.alert("Please Enter Account/IBAN Number");
         return;
       }
-      // else if (ms681.TransactionRadioDefaultValue.value == " " && ms681.requestTypeId.value === 1) {
-      //   console.log("Inside account transfer when Account Number / IBAN Number is not selected");
-      //   helper.alert("Input Mandatory Fields");
-      //   return;
-      // }
       else {
 
         console.log("RequestDate Check")
         console.log("when mode of transaction by default value : ", ms681.modeDefaultValue.value);
-
-        // if (ms681.TransactionRadioDefaultValue.value === "Account" && ms681.AccountNumber.value == "" && ms681.requestTypeId.value === 1) {
-        //   console.log("when Account Number is not entered");
-        //   helper.alert("Account Number is mandatory");
-        //   return;
-        // }
-
-        // else if (ms681.IBANNumberValue.value == "" && ms681.TransactionRadioDefaultValue.value == "iban" && ms681.requestTypeId.value === 1) {
-        //   console.log("when Iban Number is not entered");
-        //   helper.alert("IBAN Number is mandatory");
-        //   return;
-        // }
 
         if (ms681.requestTypeId.value === 2) {
 
@@ -1342,7 +1314,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
             requestDateFrom: convertedDate(ms681.fromDate.value),
             requestDateTo: convertedDate(ms681.toDate.value),
             channelId: ms681.dpChannel.value ? ms681.dpChannel.value : 0,
-            ipAddress: "111.119.183.19",
+            ipAddress: ms681.ipAddress.value,
             isActive: 1,
             createdBy: ms681.createdBy.value,
             createdDate: ms681.createdDate.value,
@@ -1446,6 +1418,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
     ms681.createdDate.value = header.loginBranchDate;
     ms681.createdBy.value = header.loginUserId;
+    ms681.ipAddress.value = header.loginUserIp;
 
     ms681.setModeOfTranList(MegaSet681.receiveTranModeList);
     ms681.setChannelList(MegaSet681.receiveChannelList);
