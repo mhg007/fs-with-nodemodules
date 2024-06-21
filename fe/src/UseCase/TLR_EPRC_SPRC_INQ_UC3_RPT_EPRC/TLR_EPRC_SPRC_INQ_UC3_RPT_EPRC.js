@@ -7,7 +7,6 @@ import {
 } from "@teresol-v2/usecase-hoc/utils";
 import helper from "@teresol-v2/usecase-hoc/helper";
 import MegaSet681 from "@teresol-v2/mega-set681";
-// import MegaSet681 from "../../MegaSets/MegaSet681.vue"
 
 // UseCase HOC Name
 const hocName = "TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC";
@@ -96,13 +95,6 @@ function formatCnic(val) {
   const formattedCnic = stringWithoutDashes.replace(/^(\d{5})(\d{7})(\d{1})$/, '$1-$2-$3');
 
   return formattedCnic;
-}
-
-function leadingZeros(val) {
-  let desriedLength = 4;
-  let zerosToAdd = desriedLength - val.length;
-  let paddedInput = val.padStart(desriedLength, '0');
-  return paddedInput;
 }
 
 function formatNtn(ntnVal, ntnType) {
@@ -252,10 +244,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
 
     clearState() {
-      console.log("When clear state function is calling to clear fields")
+      console.debug("When clear state function is calling to clear fields")
 
       if (ms681.requestTypeId.value === 1) {
-        console.log("When Account Transfer Is Selected Enable Account Number Fields");
+        console.debug("When Account Transfer Is Selected Enable Account Number Fields");
         ms681.channelDropDownIsVisible.value = true;
         ms681.branchCodeIsVisible.value = true;
         ms681.transactionRadioBtnIsVisible.value = true;
@@ -270,7 +262,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       }
 
       if (ms681.requestTypeId.value === 2) {
-        console.log("When Cash Over Counnter Is Selected Enable COC Fields");
+        console.debug("When Cash Over Counnter Is Selected Enable COC Fields");
         ms681.channelDropDownIsVisible.value = true;
         ms681.identificationDocTypeIsVisible.value = true;
         ms681.identificationDocNumberIsVisible.value = true;
@@ -287,7 +279,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       }
 
       if (ms681.TransactionRadioDefaultValue.value === "Account") {
-        console.log("when account radio button selected which is account and clear button pressed")
+        console.debug("when account radio button selected which is account and clear button pressed")
         ms681.AccountNumberIsVisible.value = true;
         ms681.accountNumberTextBoxIsDisable.value = false;
         ms681.IBANNumberIsVisible.value = false;
@@ -295,7 +287,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       }
 
       if (ms681.TransactionRadioDefaultValue.value === "iban") {
-        console.log("when account radio button selected which is iban and clear button pressed")
+        console.debug("when account radio button selected which is iban and clear button pressed")
         ms681.AccountNumberIsVisible.value = false;
         ms681.accountNumberTextBoxIsDisable.value = false;
         ms681.IBANNumberIsVisible.value = true;
@@ -352,32 +344,32 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
     setAccountNumber(value) {
       ms681.AccountNumber.value = value ?? "";
-      console.log("ms681.AccountNumber: ", ms681.AccountNumber.value);
+      console.debug("ms681.AccountNumber: ", ms681.AccountNumber.value);
     },
 
     setIBANNumber(value) {
       ms681.IBANNumberValue.value = value ?? "";
-      console.log("ms681.IBANNumberValue: ", ms681.IBANNumberValue.value);
+      console.debug("ms681.IBANNumberValue: ", ms681.IBANNumberValue.value);
     },
 
     setbranchCode(value) {
-      ms681.branchCodeValue.value = leadingZeros(value.replace(/[^0-9]/g, '') ?? "gtg");
-      console.log("ms681.branchCodeValue: ", ms681.branchCodeValue.value);
+      ms681.branchCodeValue.value = helper.padLeadingZeros(value, 4)
+      console.debug("ms681.branchCodeValue: ", ms681.branchCodeValue.value);
     },
 
     setFromDate(value) {
       ms681.fromDate.value = value ?? "";
-      console.log("ms681.fromDate: ", ms681.fromDate.value);
+      console.debug("ms681.fromDate: ", ms681.fromDate.value);
     },
 
     setToDate(value) {
       ms681.toDate.value = value ?? "";
-      console.log("ms681.toDate: ", ms681.toDate.value);
+      console.debug("ms681.toDate: ", ms681.toDate.value);
     },
 
     setIdentificationDocNumber(value) {
 
-      console.log("When Set Identification Document Number Function Is Called")
+      console.debug("When Set Identification Document Number Function Is Called")
 
       ms681.IdentificationDocNoDefaultValue.value = value ?? "";
       if (ms681.IdentificationDocTypeDefaultValue.value === "ARC") {
@@ -385,7 +377,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       }
       if (ms681.IdentificationDocTypeDefaultValue.value === "CNIC") {
         if (validateCnic(value) === false) {
-          console.log("When cnic contains non numeric character")
+          console.debug("When cnic contains non numeric character")
           ms681.IdentificationDocNoDefaultValue.value = ""
           return;
         }
@@ -417,7 +409,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     },
 
     setidentificationDocType(listOfStatus) {
-      console.log("LIST of STATUS : ", listOfStatus)
+      console.debug("LIST of STATUS : ", listOfStatus)
 
       const arr = [];
 
@@ -467,7 +459,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       if (Object.keys(tableData).length > 10) {
 
         ms681.totalPages.value = Math.ceil(Object.keys(tableData).length / 10);
-        console.log("Total Pages: ", ms681.totalPages);
+        console.debug("Total Pages: ", ms681.totalPages);
 
         // ------------- DICTIONARY -------------------- //
 
@@ -481,7 +473,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           }
 
           ms681.tableDataDictionary[key].push(record);
-          console.log(ms681.tableDataDictionary[key].length);
+          console.debug(ms681.tableDataDictionary[key].length);
           // Check if 5 records have been added, then move to the next key
           if (ms681.tableDataDictionary[key].length >= 10) {
             keyIndex += 1;
@@ -489,33 +481,13 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
         });
 
-        console.log("DICTIONARY: ", ms681.tableDataDictionary);
+        console.debug("DICTIONARY: ", ms681.tableDataDictionary);
         const dataWithIds = ms681.tableDataDictionary['key1'].map((item, index) => ({
           id: index + 1,
           ...item,
         }));
         // ------------- DICTIONARY -------------------- //
-
-        dataWithIds.forEach((item) => {
-          // RequestedAt Field Formatting
-          item.requestedAt = item.requestedAt;
-          const currentDate = new Date();
-          const formattedDate = currentDate.toLocaleDateString('en-CA', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
-          item.requestedAt = dateFormatter(formattedDate);
-
-          // Issued On Date Field Formatting
-          item.transactionRealizationDate = dateFormatter(item.transactionRealizationDate);
-
-          // Download Date Field Formatting
-          item.firstRequestDate = dateFormatter(item.firstRequestDate);
-
-        });
-        console.log()
-        ms681.tableData.value = dataWithIds;
+        ms681.setDataWidthValues(dataWithIds);
       }
       else {
         const dataWithIds = tableData.map((item, index) => ({
@@ -523,30 +495,33 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           ...item,
         }));
 
-        dataWithIds.forEach((item) => {
-          // RequestedAt Field Formatting
-          item.requestedAt = item.requestedAt;
-          const currentDate = new Date();
-          const formattedDate = currentDate.toLocaleDateString('en-CA', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
-          item.requestedAt = dateFormatter(formattedDate);
+        ms681.setDataWidthValues(dataWithIds);
 
-          // Issued On Date Field Formatting
-          item.transactionRealizationDate = dateFormatter(item.transactionRealizationDate);
-
-          // Download Date Field Formatting
-          item.firstRequestDate = dateFormatter(item.firstRequestDate);
-
-        });
-
-        ms681.tableData.value = dataWithIds;
       }
+      console.debug("Model: ", ms681.tableData.value);
+    },
 
+    setDataWidthValues(dataWithIds) {
+      dataWithIds.forEach((item) => {
+        // RequestedAt Field Formatting
+        item.requestedAt = item.requestedAt;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        });
+        item.requestedAt = dateFormatter(formattedDate);
 
-      console.log("Model: ", ms681);
+        // Issued On Date Field Formatting
+        item.transactionRealizationDate = dateFormatter(item.transactionRealizationDate);
+
+        // Download Date Field Formatting
+        item.firstRequestDate = dateFormatter(item.firstRequestDate);
+
+      });
+
+      ms681.tableData.value = dataWithIds;
     },
 
     setPaginatedComponentValue(val) {
@@ -566,15 +541,68 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     setPagination(val) {
       if (val.totalRecord === 0) {
         ms681.totalPages = 1
-        console.log("TOTAL PAGES ", ms681.totalPages);
+        console.debug("TOTAL PAGES ", ms681.totalPages);
       }
       else {
         ms681.totalPages = Math.ceil(val.totalRecord / val.responsePageSize)
-        console.log("TOTAL PAGES IN ELSE CONDITIONS ", ms681.totalPages);
+        console.debug("TOTAL PAGES IN ELSE CONDITIONS ", ms681.totalPages);
       }
     }
 
   }
+
+  function changeOnRequestTypeId(...params) {
+    ms681.channelDropDownIsVisible.value = params[0];
+    ms681.identificationDocNumberIsVisible.value = params[1];
+    ms681.identificationDocTypeIsVisible.value = params[2];
+    ms681.identificationDocNumberIsDisable.value = params[3];
+
+    ms681.fromDateIsVisible.value = params[4];
+    ms681.toDateIsVisible.value = params[5];
+
+    ms681.branchCodeIsVisible.value = params[6];
+    ms681.transactionRadioBtnIsVisible.value = params[7];
+    ms681.AccountNumberIsVisible.value = params[8];
+    ms681.accountRadioBtnIsVisible.value = params[9];
+  }
+
+  function changeOnTransactionRadioDefaultValues(...params) {
+    ms681.AccountNumberIsVisible.value = params[0];
+    ms681.accountNumberTextBoxIsDisable.value = params[1];
+    ms681.IBANNumberIsVisible.value = params[2];
+    ms681.IBANNumberTextBoxIsDisable.value = params[3];
+  }
+
+  function transactionRadioButtonOnChange(...params) {
+    ms681.AccountNumber.value = params[0];
+    ms681.IBANNumberValue.value = params[1];
+    ms681.AccountNumberIsVisible.value = params[2];
+    ms681.accountNumberTextBoxIsDisable.value = params[3];
+    ms681.IBANNumberIsVisible.value = params[4];
+    ms681.IBANNumberTextBoxIsDisable.value = params[5];
+    ms681.sprcTableIsVisible.value = params[6];
+    ms681.reportsPaginationIsVisible.value = params[7];
+    ms681.downloadBtnIsVisible.value = params[8];
+    ms681.exitBtnIsVisible.value = params[9];
+
+    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = params[9];
+    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = params[10];
+
+  }
+
+  function modeofTransDropDownonChange(...params) {
+    ms681.requestTypeId.value = params[0];
+    ms681.idDocumentType.value = params[1];
+    ms681.transactionRadioBtnIsVisible.value = params[2];
+    ms681.branchCodeIsVisible.value = params[3];
+    ms681.AccountNumberIsVisible.value = params[4];
+    ms681.IBANNumberIsVisible.value = params[5];
+    ms681.identificationDocTypeIsVisible.value = params[6];
+    ms681.identificationDocNumberIsVisible.value = params[7];
+    ms681.TransactionRadioDefaultValue.value = params[8];
+    ms681.setTodayDate();
+  }
+
   /// MegaSet661 - Config ///
   const megaset681Config = ref({
     selectedRow: "",
@@ -584,7 +612,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       ModeofTransDropDown: {
         isDisabled: ref(false),
         isVisible: ref(true),
-        // mandatory: ref(true),
         inputColor: ref("black"),
         labelColor: ref("black"),
         spanInputs: ref(6),
@@ -622,7 +649,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       identificationDocType: {
         isDisabled: ref(false),
         isVisible: ms681.identificationDocTypeIsVisible,
-        // mandatory: ref(true),
         inputColor: ref("black"),
         labelColor: ref("black"),
         spanInputs: ref(6),
@@ -644,13 +670,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         isDisabled: ms681.identificationDocNumberIsDisable,
         inputColor: ref("black"),
         labelColor: ref("black"),
-        // mandatory: ref(true),
         spanInputs: ref(6),
         spanLabels: ref(5),
         inputLength: ms681.inputLength,
         identityDocNumberVal: ms681.IdentificationDocNoDefaultValue,
-
-        // mandatory: true,
       },
       accountNumberTextBox: {
         label: "Account Number",
@@ -692,8 +715,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         labelColor: ref("black"),
         mandatory: ref(true),
         sprcNumberVal: ref(""),
-
-        // mandatory: true,
       },
       AccountRadioButton: {
         isDisabled: ref(false),
@@ -734,7 +755,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       fiscalYearDropDown: {
         isDisabled: ref(false),
         isVisible: ref(false),
-        // mandatory: ref(true),
         inputColor: ref("black"),
         labelColor: ref("black"),
         inputLength: ref(14),
@@ -770,10 +790,8 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         isDisabled: ref(false),
         inputColor: ref("black"),
         labelColor: ref("black"),
-        // mandatory: ref(true),
         spanInputs: ref(6),
         spanLabels: ref(5),
-        // placeholder: ref("ePRC Number"),
         ePRCNumberValue: ms681.ePRCNumberValue,
 
       },
@@ -841,33 +859,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           },
 
         ],
-        tableData: [
-          {
-            id: 1,
-            DownloadPRC: "yes",
-            NameofRemitter: "Wali",
-            ReferenceNumber: "4220146520115",
-            IBANAccountNumberofRemitter: "00812536459",
-            RemitterCountry: "Pakistan",
-            PRCNo: "testing",
-            DateofPRC: "01/01/2023",
-            AmountofRemittanceinPKR: "12"
-
-          },
-          {
-            DownloadPRC: "yes",
-            NameofRemitter: "Wali",
-            ReferenceNumber: "4220146520115",
-            IBANAccountNumberofRemitter: "00812536459",
-            RemitterCountry: "Pakistan",
-            PRCNo: "testing",
-            DateofPRC: "01/01/2023",
-            AmountofRemittanceinPKR: "12"
-
-          }
-
-        ],
-
+        tableData: ms681.tableData,
       },
       sPRCTable: {
         isDisabled: ref(false),
@@ -948,10 +940,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
   const megaset681Handlers = {
 
     async "ExitButton-onClick"() {
-      console.log("Exit Button ");
+      console.debug("Exit Button ");
       try {
         const res = await fsm.post("EXIT");
-        console.log("res", res);
+        console.debug("res", res);
         close(false);
       } catch (error) {
         helper.alert(error);
@@ -967,94 +959,42 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
     "TransactionRadioButton-onChange": (val) => {
       ms681.TransactionRadioDefaultValue.value = val;
-      console.log("ms681.TransactionRadioDefaultValue: ", ms681.TransactionRadioDefaultValue);
+      console.debug("ms681.TransactionRadioDefaultValue: ", ms681.TransactionRadioDefaultValue);
 
       if (ms681.TransactionRadioDefaultValue.value === "Account") {
-        console.log("INSIDE ACCOUNT SELECTEION")
-
-        ms681.AccountNumber.value = "";
-        ms681.IBANNumberValue.value = "";
-
-        ms681.AccountNumberIsVisible.value = true;
-        ms681.accountNumberTextBoxIsDisable.value = false;
-        ms681.IBANNumberIsVisible.value = false;
-        ms681.IBANNumberTextBoxIsDisable.value = true;
-        ms681.sprcTableIsVisible.value = false;
-        ms681.reportsPaginationIsVisible.value = false;
-        ms681.downloadBtnIsVisible.value = false;
-        ms681.exitBtnIsVisible.value = false;
-
-        megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = 0;
-        megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = -1;
-
+        console.debug("INSIDE ACCOUNT SELECTEION")
+        transactionRadioButtonOnChange("", "", true, false, false, true, false, false, false, false, 0, -1)
       }
       else if (ms681.TransactionRadioDefaultValue.value === "iban") {
-        console.log("INSIDE IBAN SELECTEION")
-        ms681.AccountNumber.value = "";
-        ms681.IBANNumberValue.value = "";
-
-        ms681.AccountNumberIsVisible.value = false;
-        ms681.accountNumberTextBoxIsDisable.value = true;
-        ms681.IBANNumberIsVisible.value = true;
-        ms681.IBANNumberTextBoxIsDisable.value = false;
-        ms681.sprcTableIsVisible.value = false;
-        ms681.reportsPaginationIsVisible.value = false;
-        ms681.downloadBtnIsVisible.value = false;
-        ms681.exitBtnIsVisible.value = false;
-
-        megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = -1;
-        megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = 0;
+        console.debug("INSIDE IBAN SELECTEION")
+        transactionRadioButtonOnChange("", "", false, true, true, false, false, false, false, false, -1, 0)
       }
     },
     "ModeofTransDropDown-onChange": (val) => {
-      ms681.modeDefaultValue.value = val; console.log("ms681.modeDefaultValue: ", ms681.modeDefaultValue);
+      ms681.modeDefaultValue.value = val; console.debug("ms681.modeDefaultValue: ", ms681.modeDefaultValue);
 
-      console.log("INSIDE MODE OF TRANS DROP DOWN selection")
+      console.debug("INSIDE MODE OF TRANS DROP DOWN selection")
       if (ms681.modeDefaultValue.value === "Cash Over Counter Transaction") {
-        console.log("when mode of transaction selected value is Cash Over Counter Transaction")
-        ms681.clearState();
-        ms681.requestTypeId.value = 2;
-        ms681.idDocumentType.value = ms681.IdentificationDocTypeDefaultValue.value;
-        ms681.transactionRadioBtnIsVisible.value = false;
-        ms681.branchCodeIsVisible.value = false;
-        ms681.AccountNumberIsVisible.value = false;
-        ms681.IBANNumberIsVisible.value = false;
-
-        ms681.identificationDocTypeIsVisible.value = true;
-        ms681.identificationDocNumberIsVisible.value = true;
-
-        ms681.TransactionRadioDefaultValue.value = ' ';
-        ms681.setTodayDate();
-
+        console.debug("when mode of transaction selected value is Cash Over Counter Transaction")
+        modeofTransDropDownonChange(2, ms681.IdentificationDocTypeDefaultValue.value, false, false, false, false, true, true, ' ');
       }
 
       if (ms681.modeDefaultValue.value === "Account Transfer") {
 
-        console.log("when mode of transaction selected value is Account Transfer")
+        console.debug("when mode of transaction selected value is Account Transfer")
         ms681.clearState();
-        ms681.requestTypeId.value = 1;
-        ms681.idDocumentType.value = 0;
-        ms681.transactionRadioBtnIsVisible.value = true;
-        ms681.branchCodeIsVisible.value = true;
-        ms681.AccountNumberIsVisible.value = true;
-        ms681.IBANNumberIsVisible.value = false;
+        modeofTransDropDownonChange(1, 0, true, true, true, false, false, false, " ");
 
         ms681.TransactionRadioDefaultValue.value = 'Account';
-        ms681.setTodayDate();
-
-        ms681.identificationDocTypeIsVisible.value = false;
-        ms681.identificationDocNumberIsVisible.value = false;
 
         megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = 0;
         megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = -1;
-
-
       }
     },
 
     "channelDropDown-onChange": (val) => {
 
-      console.log("Inside channel drop down selection")
+      console.debug("Inside channel drop down selection")
 
       ms681.channelDefaultValue.value = val;
 
@@ -1068,22 +1008,22 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
 
       if (ms681.channelDefaultValue.value === "Branch") {
-        console.log("when channel drop down selection value is Branch")
+        console.debug("when channel drop down selection value is Branch")
         ms681.dpChannel.value = channelEnum.Branch;
       }
       if (ms681.channelDefaultValue.value === "Internet") {
-        console.log("when channel drop down selection value is Internet")
+        console.debug("when channel drop down selection value is Internet")
         ms681.dpChannel.value = channelEnum.Internet;
       }
       if (ms681.channelDefaultValue.value === "Scheduler") {
-        console.log("when channel drop down selection value is Scheduler")
+        console.debug("when channel drop down selection value is Scheduler")
         ms681.dpChannel.value = channelEnum.Scheduler;
       }
 
     },
     "identificationDocType-onChange": (val) => {
 
-      console.log("ms681.IdentificationDocTypeDefaultValue: ", ms681.IdentificationDocTypeDefaultValue);
+      console.debug("ms681.IdentificationDocTypeDefaultValue: ", ms681.IdentificationDocTypeDefaultValue);
       ms681.IdentificationDocTypeDefaultValue.value = val;
 
       ms681.sprcTableIsVisible.value = false;
@@ -1123,41 +1063,23 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     */
     async "onPagination-currentPage"(val) {
       try {
-        console.log("pagination value: ", val, "\n Table Data by Key", ms681.tableDataDictionary[`key${val}`]);
+        console.debug("pagination value: ", val, "\n Table Data by Key", ms681.tableDataDictionary[`key${val}`]);
 
         const dataWithIds = ms681.tableDataDictionary[`key${val}`].map((item, index) => ({
           id: index + 1,
           ...item,
         }));
 
-        dataWithIds.forEach((item) => {
-          // RequestedAt Field Formatting
-          item.requestedAt = item.requestedAt;
-          const currentDate = new Date();
-          const formattedDate = currentDate.toLocaleDateString('en-CA', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-          });
-          item.requestedAt = dateFormatter(formattedDate);
+        ms681.setDataWidthValues(dataWithIds);
 
-          // Issued On Date Field Formatting
-          item.transactionRealizationDate = dateFormatter(item.transactionRealizationDate);
-
-          // Download Date Field Formatting
-          item.firstRequestDate = dateFormatter(item.firstRequestDate);
-
-        });
-
-        ms681.tableData.value = dataWithIds;
       } catch (error) {
-        console.log("Error in Pagination Catch Block: ", error);
+        console.debug("Error in Pagination Catch Block: ", error);
         helper.alert(error, 'Error');
       }
     },
 
     async "ClearButton-onClick"() {
-      console.log("Clear Button Click ")
+      console.debug("Clear Button Click ")
       try {
         ms681.clearState();
       } catch (error) {
@@ -1166,10 +1088,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     },
 
     async "BackButton-onClick"() {
-      console.log("Back Button Click")
+      console.debug("Back Button Click")
       try {
         const res = await fsm.post("BACK");
-        console.log("res", res);
+        console.debug("res", res);
         close(false);
       } catch (error) {
         helper.alert(error)
@@ -1177,12 +1099,12 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     },
 
     async "SearchButton-onClick"() {
-      console.log("Check Validation on Mandatory Fields")
+      console.debug("Check Validation on Mandatory Fields")
 
       ms681.setPaginatedComponentValue(1);
 
       if (ms681.requestTypeId.value === "") {
-        console.log("inside when mode of transaction field is not selected");
+        console.debug("inside when mode of transaction field is not selected");
         helper.alert("Please Select Mode of Transaction");
         return;
       }
@@ -1190,58 +1112,58 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       if (ms681.modeDefaultValue.value === "Account Transfer" &&
         ((ms681.TransactionRadioDefaultValue.value === "Account" && ms681.AccountNumber.value == "") ||
           (ms681.TransactionRadioDefaultValue.value === "iban" && ms681.IBANNumberValue.value == ""))) {
-        console.log("inside Account Transfer Transaction");
+        console.debug("inside Account Transfer Transaction");
         helper.alert("Please Enter Account/IBAN Number");
         return;
       }
       else {
 
-        console.log("RequestDate Check")
-        console.log("when mode of transaction by default value : ", ms681.modeDefaultValue.value);
+        console.debug("RequestDate Check")
+        console.debug("when mode of transaction by default value : ", ms681.modeDefaultValue.value);
 
         if (ms681.requestTypeId.value === 2) {
 
           if (ms681.IdentificationDocTypeDefaultValue.value === "") {
-            console.log("when identitfication document type is not selected ");
+            console.debug("when identitfication document type is not selected ");
             helper.alert("Document Type is mandatory");
             return;
           }
 
           if (ms681.IdentificationDocNoDefaultValue.value === "") {
-            console.log("when identitfication document number is not entered ");
+            console.debug("when identitfication document number is not entered ");
             helper.alert("Document Number is mandatory");
             return;
           }
         }
 
-        console.log("When All Mandatory Fields are seleteced --- Change State")
+        console.debug("When All Mandatory Fields are seleteced --- Change State")
         if ((ms681.fromDate.value === null) && (ms681.toDate.value === null)) {
-          console.log("when from Date and to Date is null");
+          console.debug("when from Date and to Date is null");
           helper.alert("Please Select Date Ranges")
           return;
         }
 
         if (ms681.fromDate.value === null) {
-          console.log("when from Date is null");
+          console.debug("when from Date is null");
           helper.alert("Please Select From Date ")
           return;
         }
 
         if (ms681.toDate.value === null) {
-          console.log("when to Date is null");
+          console.debug("when to Date is null");
           helper.alert("Please Select To Date ")
           return;
         }
 
         if (((ms681.fromDate.value != "") && (ms681.toDate.value != ""))) {
-          console.log("Changing State")
+          console.debug("Changing State")
 
-          console.log("INSIDE IF OF DATE CHECKER")
+          console.debug("INSIDE IF OF DATE CHECKER")
           const startDate = convertedDate(ms681.fromDate.value);
           const endDate = convertedDate(ms681.toDate.value);
 
-          console.log("START DATE : ", startDate);
-          console.log("END DATE : ", endDate);
+          console.debug("START DATE : ", startDate);
+          console.debug("END DATE : ", endDate);
 
 
           if (startDate > endDate) {
@@ -1260,14 +1182,14 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
             numberOfDaysInYear++;
           }
 
-          console.log("numberOfDaysInYear : ", numberOfDaysInYear);
+          console.debug("numberOfDaysInYear : ", numberOfDaysInYear);
 
 
           const timeDifference1 = new Date(endDate).getTime() - new Date(startDate).getTime();
           const daysDifference = timeDifference1 / (1000 * 60 * 60 * 24);
 
-          console.log("timeDifference1 : ", timeDifference1);
-          console.log("daysDifference : ", daysDifference);
+          console.debug("timeDifference1 : ", timeDifference1);
+          console.debug("daysDifference : ", daysDifference);
 
           if (daysDifference >= numberOfDaysInYear) {
             helper.alert("The Difference Between Date From and Date To Should be less than 3 months");
@@ -1277,7 +1199,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           if (ms681.AccountNumber.value != "") {
 
             if (ms681.AccountNumber.value.length == 17 || ms681.AccountNumber.value.length == 21) {
-              console.log("WHEN ACCOUNT NUMBER IS GIVEN: ", ms681.AccountNumber);
+              console.debug("WHEN ACCOUNT NUMBER IS GIVEN: ", ms681.AccountNumber);
               ms681.wlAccountNo.value = ms681.AccountNumber.value;
             }
             else {
@@ -1289,9 +1211,9 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           if (ms681.IBANNumberValue.value != "") {
             // ms681.IBANNumberValue.value = ms681.IBANNumberValue.value;
             if (ms681.IBANNumberValue.value.length == 28) {
-              console.log("WHEN IBAN NUMBER IS GIVEN: ", ms681.IBANNumberValue);
+              console.debug("WHEN IBAN NUMBER IS GIVEN: ", ms681.IBANNumberValue);
               ms681.wlAccountNo.value = ms681.IBANNumberValue.value.substring(8, 24);
-              console.log("WHEN WL Account IS GIVEN: ", ms681.wlAccountNo);
+              console.debug("WHEN WL Account IS GIVEN: ", ms681.wlAccountNo);
             }
             else {
               helper.alert("Please Enter Valid IBAN Number")
@@ -1301,7 +1223,6 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           }
 
           const request = {
-            branchCode: 1025,
             certificateTypeId: 2,
             requestTypeId: ms681.requestTypeId.value,
             accountNumber: removeHyphens(ms681.AccountNumber.value),
@@ -1326,31 +1247,28 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
             targetBranchCode: ms681.branchCodeValue.value ? ms681.branchCodeValue.value : 0,
           };
 
-          console.log("Searching Request Payload from Front-end : \n", request);
+          console.debug("Searching Request Payload from Front-end : \n", request);
 
           try {
             let res = {};
             res = await fsm.post('SEARCH', { request });
-            console.log("responswe from FSm", res);
-            console.log("receivePostRequest: ", res.receivePostRequest);
+            console.debug("responswe from FSm", res);
+            console.debug("receivePostRequest: ", res.receivePostRequest);
             if (res.receivePostRequest.mBoolean == false) {
               helper.alert("EPRC 201: No Record found against the provided search parameters", 'Error');
             }
             else if (res) {
-              console.log("Result Data : ", res);
+              console.debug("Result Data : ", res);
               let filteredData = '';
-              if (ms681.requestTypeId.value === 1)
-              {
+              if (ms681.requestTypeId.value === 1) {
                 filteredData = res.records.filter(x => x.applicationSource.trim() !== "COC");
               }
 
-              if (ms681.requestTypeId.value === 2)
-              {
+              if (ms681.requestTypeId.value === 2) {
                 filteredData = res.records.filter(x => x.applicationSource.trim() == "COC");
               }
 
-              if (filteredData.length > 0)
-              {
+              if (filteredData.length > 0) {
                 ms681.setTableData(filteredData);
                 ms681.changeState();
               }
@@ -1361,7 +1279,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
           } catch (error) {
             const errorMessage = error;
-            console.log("Error in onSubmit Catch Block: ", errorMessage);
+            console.debug("Error in onSubmit Catch Block: ", errorMessage);
             helper.alert("EPRC 201: No Record found against the provided search parameters", 'Error');
             ms681.sprcTableIsVisible.value = false;
             ms681.downloadBtnIsVisible.value = false;
@@ -1437,6 +1355,4 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = defineUseCaseComponent(hocName, hocSetup);
 // Define UseCase HOC - Loader
 const UseCaseLoader = defineUseCaseLoader(hocName, hocSetup);
-// console.log(UseCaseLoader);
-// export { TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC, UseCaseLoader };
 export default UseCaseLoader

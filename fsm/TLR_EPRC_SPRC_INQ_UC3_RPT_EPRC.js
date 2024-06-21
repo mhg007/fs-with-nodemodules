@@ -1,11 +1,12 @@
 const { createMachine, assign, spawn } = require("xstate");
-const { FetchActor, trigger, getToken } = require("@teresol-v2/fsm");
+const { FetchActor, trigger, getToken ,getLogger} = require("@teresol-v2/fsm");
 const service = require("./urls.js");
 const listOfTransMode = service.get("setupEprcDetail");
 const listOfidentificationType = service.get("setupEprcDetail");
 const listOfChannels = service.get("setupEprcDetail");
 const insertRequestLog = service.get("eprcTransactionDetail");
 const fetchEprcRpt = service.get("eprcTransactionDetail");
+const logger = getLogger("TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC.js") 
 
 /**
  * TODO Change the name of this file to your USE_CASE_IDENTIFIER.js
@@ -50,7 +51,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       },
       FetchTransMode: {
         entry: [
-          "spawnFetch", // API CALLING
+          "spawnFetch",
           async (context) => {
             trigger(
               context,
@@ -84,7 +85,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
       },
       FetchChannelList: {
         entry: [
-          "spawnFetch", // API CALLING
+          "spawnFetch", 
           async (context) => {
             trigger(
               context,
@@ -163,7 +164,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               context,
               insertRequestLog,
               "POST",
-              // context.searchParameters,
               context.insertionLogRequestParameters,
               "FETCH_SUCCESS",
               "FETCH_FAILURE"
@@ -173,7 +173,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         on: {
           FETCH_SUCCESS: {
             actions: [
-              "receiveValidateParameters",
               "receivePostRequest",
               "loadPostRequest",
               "setmbooleanFalse",
@@ -262,57 +261,53 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
     actions: {
       receiveHeader: assign({
         header: (context, event) => {
-          console.log("Header Response : ", event.header);
+          logger.info("Header Response : " + JSON.stringify(event.header));
           return event.header;
         },
       }),
       receivePostParameters: assign({
         insertRequestLogRequest: (context, event) => {
-          console.log("insertRequestLogRequest: ", event.result);
+          logger.info("insertRequestLogRequest: " + JSON.stringify(event.result));
           return event.result;
         },
       }),
 
       receiveSearchParameters: assign({
         searchParameters: (context, event) => {
-          console.log("---------");
-          console.log("insertRequestLogRequest: ", event.request);
+          logger.info("insertRequestLogRequest: " + JSON.stringify(event.request));
           context.insertionLogRequestParameters.push(event.request)
-          console.log("Insertion Log Rquests Paramters : ", context.insertionLogRequestParameters);
+          logger.info("Insertion Log Rquests Paramters : " + JSON.stringify(context.insertionLogRequestParameters));
           return event.request;
         },
       }),
 
       receiveEprcSearchParameters: assign({
         eprcSearchParameters: (context, event) => {
-          console.log("---------");
           const request = {};
 
           // Account Transfer Option 
 
           if (event.request.requestTypeId == 1) {
 
-            request.branchCode = "1026";
-
-            console.log("when account transfer request Id type value : ", event.request.requestTypeId)
+            logger.info("when account transfer request Id type value : " + event.request.requestTypeId)
 
             if (event.request.channelId != 0) {
-              console.log("when channel also provided by front-end ")
+              logger.info("when channel also provided by front-end ")
               request.channel = event.request.channelId;
             }
 
             if (event.request.targetBranchCode != 0) {
-              console.log("when target branchCode also provided by front-end ")
+              logger.info("when target branchCode also provided by front-end ")
               request.targetBranchCode = event.request.targetBranchCode;
             }
 
             if (event.request.accountNumber != "") {
-              console.log("when account number also provided by front-end ")
+              logger.info("when account number also provided by front-end ")
               request.beneAccountNo = event.request.wlAccountNo;
             }
 
             if (event.request.iban != "") {
-              console.log("when iban number also provided by front-end ")
+              logger.info("when iban number also provided by front-end ")
               request.beneIban = event.request.iban;
             }
 
@@ -323,12 +318,10 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
           // Cash Over Counter Request Option Option 
           if (event.request.requestTypeId == 2) {
 
-            request.branchCode = "1026";
-
-            console.log("when cash over counter transaction request Id type value : ", event.request.requestTypeId)
+            logger.info("when cash over counter transaction request Id type value : " + event.request.requestTypeId)
 
             if (event.request.channelId != 0) {
-              console.log("when channel also provided by front-end ")
+              logger.info("when channel also provided by front-end ")
               request.channel = event.request.channelId;
             }
 
@@ -338,16 +331,8 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
             request.toDate = event.request.requestDateTo;
           }
 
-          console.log("Searching Request Payload : ", request);
+          logger.info("Searching Request Payload : "+ JSON.stringify(request));
           return request;
-        },
-      }),
-
-      receiveValidateParameters: assign({
-        validateParameters: (context, event) => {
-          console.log("---------");
-          console.log("Response from Service Valid Account Number: ", context.searchParameters.accountNumber);
-          return event.request;
         },
       }),
 
@@ -355,9 +340,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
 
-          console.log("Mode Of Transaction List : ", context.megaset681.receiveTranModeList);
-          console.log("Channel List : ", context.megaset681.receiveChannelList);
-          console.log("Identification Document Type List : ", context.megaset681.listOfStatus);
+          logger.info("Identificatyion Type List : " + JSON.stringify(context.megaset681.listOfStatus));
+          logger.info("Mode of Transaction List : "+ JSON.stringify(context.megaset681.receiveTranModeList));
+          logger.info("Channel List : "+ JSON.stringify(context.megaset681.receiveChannelList));
 
           partialCtxClone.listOfStatus = context.megaset681.listOfStatus;
           partialCtxClone.receiveTranModeList = context.megaset681.receiveTranModeList;
@@ -371,7 +356,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
           partialCtxClone.records = context.megaset681.receiveTranModeList;
-          console.log("PRC Info Detail : " , context.megaset681.receiveTranModeList);
+          logger.info("PRC Info Detail : " + JSON.stringify(context.megaset681.receiveTranModeList));
           return partialCtxClone;
         },
       }),
@@ -381,14 +366,13 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
         partialCtx: (context, event) => {
           let partialCtxClone = Object.assign({}, context.partialCtx);
           partialCtxClone.records = context.megaset681.receiveRptList;
-          console.log("PRC Back Office Reprt List : " , context.megaset681.receiveRptList);
+          logger.info("PRC Back Office Reprt List : " + JSON.stringify(context.megaset681.receiveRptList));
           return partialCtxClone;
         },
       }),
 
       receiveRequestType: assign({
         requestType: (context, event) => {
-          console.log(event.requestType);
           return event.requestType;
         },
       }),
@@ -441,7 +425,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
       receivePostRequest: assign({
         postRequest: (context, event) => {
-          console.log("Receive Insert Response ", event.result);
+          logger.info("receive Records" + JSON.stringify(event.result));
           return event.result;
         },
       }),
