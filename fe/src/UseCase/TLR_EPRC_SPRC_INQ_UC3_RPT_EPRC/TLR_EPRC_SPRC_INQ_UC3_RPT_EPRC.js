@@ -585,8 +585,8 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     ms681.downloadBtnIsVisible.value = params[8];
     ms681.exitBtnIsVisible.value = params[9];
 
-    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = params[9];
-    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = params[10];
+    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[0].tabIndex = params[10];
+    megaset681Config.value.componentProps.TransactionRadioButton.radioGroup[1].tabIndex = params[11];
 
   }
 
