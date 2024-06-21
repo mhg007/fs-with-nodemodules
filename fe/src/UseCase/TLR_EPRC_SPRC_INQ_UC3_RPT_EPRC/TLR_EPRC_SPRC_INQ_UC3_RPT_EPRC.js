@@ -248,50 +248,28 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
       if (ms681.requestTypeId.value === 1) {
         console.debug("When Account Transfer Is Selected Enable Account Number Fields");
-        ms681.channelDropDownIsVisible.value = true;
-        ms681.branchCodeIsVisible.value = true;
-        ms681.transactionRadioBtnIsVisible.value = true;
-        ms681.AccountNumberIsVisible.value = true;
-        ms681.accountRadioBtnIsVisible.value = false;
-        ms681.fromDateIsVisible.value = true;
-        ms681.toDateIsVisible.value = true;
+        changeOnRequestTypeId(true, false, false, true, true, true, true, true, true, false)
 
-        ms681.identificationDocNumberIsVisible.value = false;
-        ms681.identificationDocTypeIsVisible.value = false;
-        ms681.identificationDocNumberIsDisable.value = true;
       }
 
       if (ms681.requestTypeId.value === 2) {
         console.debug("When Cash Over Counnter Is Selected Enable COC Fields");
-        ms681.channelDropDownIsVisible.value = true;
-        ms681.identificationDocTypeIsVisible.value = true;
-        ms681.identificationDocNumberIsVisible.value = true;
-        ms681.identificationDocNumberIsDisable.value = true;
-        ms681.fromDateIsVisible.value = true;
-        ms681.toDateIsVisible.value = true;
+        changeOnRequestTypeId(true, true, true, true, true, true, false, false, false, false)
 
-        ms681.branchCodeIsVisible.value = false;
-        ms681.transactionRadioBtnIsVisible.value = false;
-        ms681.AccountNumberIsVisible.value = false;
-        ms681.accountRadioBtnIsVisible.value = false;
 
 
       }
 
       if (ms681.TransactionRadioDefaultValue.value === "Account") {
         console.debug("when account radio button selected which is account and clear button pressed")
-        ms681.AccountNumberIsVisible.value = true;
-        ms681.accountNumberTextBoxIsDisable.value = false;
-        ms681.IBANNumberIsVisible.value = false;
-        ms681.IBANNumberTextBoxIsDisable.value = true;
+        changeOnTransactionRadioDefaultValues(true, false, false, true)
+
       }
 
       if (ms681.TransactionRadioDefaultValue.value === "iban") {
         console.debug("when account radio button selected which is iban and clear button pressed")
-        ms681.AccountNumberIsVisible.value = false;
-        ms681.accountNumberTextBoxIsDisable.value = false;
-        ms681.IBANNumberIsVisible.value = true;
-        ms681.IBANNumberTextBoxIsDisable.value = false;
+        changeOnTransactionRadioDefaultValues(false, false, true, false)
+
       }
 
 
