@@ -274,10 +274,16 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
       receiveSearchParameters: assign({
         searchParameters: (context, event) => {
-          logger.info("insertRequestLogRequest: " + JSON.stringify(event.request));
-          context.insertionLogRequestParameters.push(event.request)
-          logger.info("Insertion Log Rquests Paramters : " + JSON.stringify(context.insertionLogRequestParameters));
+          logger.info("Single Insertion Parameters: " + JSON.stringify(event.request));
           return event.request;
+        },
+
+        insertionLogRequestParameters: (context, event) => {
+          let insertionLogRequestParametersClone = Object.assign([],context.insertionLogRequestParameters);
+          insertionLogRequestParametersClone = [];
+          insertionLogRequestParametersClone.push(event.request)
+          logger.info("Bulk Insertion Log Rquests Paramters : " + JSON.stringify(insertionLogRequestParametersClone));
+          return insertionLogRequestParametersClone;
         },
       }),
 
