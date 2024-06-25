@@ -9,7 +9,7 @@
     "author": "",
     "license": "UNLICENSED",
     "dependencies": {
-        "@teresol-v2/fsm": "^1.1.6",
+        "@teresol-v2/fsm": "^1.1.7",
         "@teresol-v2/mega-set681": "^1.0.17",
         "@teresol-v2/token-mapper": "^1.0.6",
         "@teresol/fsm": "^2.20.7",
