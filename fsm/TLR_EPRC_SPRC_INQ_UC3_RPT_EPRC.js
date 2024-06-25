@@ -74,13 +74,16 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
             ],
             target: "FetchChannelList",
           },
-          FETCH_FAILURE: {
-            actions: [
-              "receiveErrorMessage",
-              "sendPartialCtx",
-            ],
-            target: "MegaSet681",
-          },
+          FETCH_FAILURE: [
+            {
+              cond: (context, event) => event.httpStatus != 200,
+              actions: ["setmbooleanFalse","receiveErrorMessage","sendPartialCtx"],
+              target: "Final",
+            },
+            {
+              target: "MegaSet681"
+            }
+          ],
         },
       },
       FetchChannelList: {
@@ -108,13 +111,16 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
             ],
             target: "FetchIdentityType",
           },
-          FETCH_FAILURE: {
-            actions: [
-              "receiveErrorMessage",
-              "sendPartialCtx",
-            ],
-            target: "MegaSet681",
-          },
+          FETCH_FAILURE: [
+            {
+              cond: (context, event) => event.httpStatus != 200,
+              actions: ["setmbooleanFalse","receiveErrorMessage","sendPartialCtx"],
+              target: "Final",
+            },
+            {
+              target: "MegaSet681"
+            }
+          ],
         },
       },
       FetchIdentityType: {
@@ -146,14 +152,16 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
             target: "MegaSet681",
           },
 
-          FETCH_FAILURE: {
-            actions: [
-              "setmbooleanFalse",
-              "receiveErrorMessage",
-              "sendPartialCtx",
-            ],
-            target: "MegaSet681",
-          },
+          FETCH_FAILURE: [
+            {
+              cond: (context, event) => event.httpStatus != 200,
+              actions: ["setmbooleanFalse","receiveErrorMessage","sendPartialCtx"],
+              target: "Final",
+            },
+            {
+              target: "MegaSet681"
+            }
+          ],
         },
       },
       PostData: {
