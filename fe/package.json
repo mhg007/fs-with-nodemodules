@@ -1,6 +1,6 @@
 {
   "name": "TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC",
-  "version": "0.1.3",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port=3100",
