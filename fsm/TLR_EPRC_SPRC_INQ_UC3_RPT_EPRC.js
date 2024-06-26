@@ -58,7 +58,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfTransMode,
               "GET",
               {
-                req_branchCode: "1025",
                 isActive: 1,
                 res_response : "RequestTypeId,RequestTypeName,RequestTypeDescription,isActive,createdBy,createDate,createTime"
               },
@@ -95,7 +94,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfChannels,
               "GET",
               {
-                req_branchCode: "1025",
                 isActive: 1,
                 res_response: "channelId,channelName,channelDescription,isActive,createdBy,createDate,createTime"
               },
@@ -132,7 +130,6 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
               listOfidentificationType,
               "GET",
               {
-                req_branchCode: "1025",
                 isActive: 1,
                 res_response: "IdentificationTypeId,IdentificationTypeName,IdentificationTypeDescription,isActive,createdBy,createDate,createTime"
               },
