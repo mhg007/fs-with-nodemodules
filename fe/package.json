@@ -1,6 +1,6 @@
 {
   "name": "TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port=3100",
@@ -22,7 +22,7 @@
     "@teresol-v2/mega-set69": "^1.0.13",
     "@teresol-v2/mega-set89_1": "^1.0.11",
     "@teresol-v2/mega-set9": "^1.0.12",
-    "@teresol-v2/ui-components": "^1.2.1",
+    "@teresol-v2/ui-components": "^1.2.4",
     "@teresol-v2/usecase-hoc": "^1.0.6",
     "@teresol/mega-set1": "^1.0.6",
     "@teresol/mega-set12": "^1.0.10",

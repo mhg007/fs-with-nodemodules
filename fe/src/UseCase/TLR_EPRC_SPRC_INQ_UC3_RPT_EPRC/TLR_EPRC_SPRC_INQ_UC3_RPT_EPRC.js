@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { isRef, nextTick, ref, unref } from "vue";
 import {
   FsmAjax,
   useUseCaseViewManager,
@@ -7,6 +7,8 @@ import {
 } from "@teresol-v2/usecase-hoc/utils";
 import helper from "@teresol-v2/usecase-hoc/helper";
 import MegaSet681 from "@teresol-v2/mega-set681";
+import { isEmpty } from "element-plus/es/utils/types.mjs";
+
 
 // UseCase HOC Name
 const hocName = "TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC";
@@ -26,6 +28,24 @@ FsmAjax.prototype.searchBtn = function (data) {
 FsmAjax.prototype.submitBtn = function (data) {
   return this.post("SUBMIT", data);
 };
+
+
+function branchCodePadding(lhs, rhs) {
+  if (!isRef(lhs)) {
+    throw new Error('The lhs must be ref');
+  }
+  const newValue = unref(rhs);
+  if (lhs.value !== newValue) {
+    lhs.value = newValue;
+  } else {
+    nextTick(() => {
+      lhs.value = '';
+      nextTick(() => {
+        lhs.value = newValue;
+      });
+    });
+  }
+}
 
 function convertedDate(val) {
   const [day, month, year] = val.split('/');
@@ -305,6 +325,15 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       ms681.exitBtnIsVisible.value = true;
     },
 
+    checkValue() {
+      // ms681.branchCodeValue.value = ms681.branchCodeValue.value;
+      ms681.branchCodeValue.value = ms681.branchCodeValue.value
+      console.debug("CHECK VALUE1")
+      console.debug("checkValue : ", ms681.branchCodeValue.value);
+      console.debug("CHECK VALUE")
+    
+    },
+
     setTodayDate() {
       const today = new Date();
       const todayYear = today.getFullYear();
@@ -331,8 +360,14 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
     },
 
     setbranchCode(value) {
-      ms681.branchCodeValue.value = helper.padLeadingZeros(value, 4)
-      console.debug("ms681.branchCodeValue: ", ms681.branchCodeValue.value);
+      if (isEmpty(value)) {
+        ms681.branchCodeValue.value = ''
+        console.debug("Value Of Branch Code when length is 0 : ", ms681.branchCodeValue.value);
+      }
+      else {
+        branchCodePadding(ms681.branchCodeValue, value?.padStart(4, "0"))
+        console.debug("Value Of Branch Code when length is greater than 0 : ", ms681.branchCodeValue.value);
+      }
     },
 
     setFromDate(value) {
@@ -954,6 +989,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       console.debug("INSIDE MODE OF TRANS DROP DOWN selection")
       if (ms681.modeDefaultValue.value === "Cash Over Counter Transaction") {
         console.debug("when mode of transaction selected value is Cash Over Counter Transaction")
+        ms681.clearState();
         modeofTransDropDownonChange(2, ms681.IdentificationDocTypeDefaultValue.value, false, false, false, false, true, true, ' ');
       }
 
