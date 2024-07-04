@@ -324,6 +324,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
 
             request.fromDate = event.request.requestDateFrom;
             request.toDate = event.request.requestDateTo;
+            request.res_response = "sprcNumber"
           }
 
           // Cash Over Counter Request Option Option 
@@ -340,6 +341,7 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
             request.identityNo = event.request.idDocumentNumber;
             request.fromDate = event.request.requestDateFrom;
             request.toDate = event.request.requestDateTo;
+            request.res_response = "sprcNumber"
           }
 
           logger.info("Searching Request Payload : "+ JSON.stringify(request));
