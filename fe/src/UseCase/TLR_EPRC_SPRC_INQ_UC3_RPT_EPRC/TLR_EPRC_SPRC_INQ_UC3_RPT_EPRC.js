@@ -429,7 +429,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       if (listOfStatus && listOfStatus.length > 0) {
         arr.push(
           ...listOfStatus.map((identityType) => ({
-            Option: identityType.identificationTypeId,
+            option: identityType.identificationTypeName,
             value: identityType.identificationTypeName,
           }))
         );
@@ -443,7 +443,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       if (receiveTranModeList && receiveTranModeList.length > 0) {
         arr.push(
           ...receiveTranModeList.map((tranMode) => ({
-            Option: tranMode.requestTypeName,
+            option: tranMode.requestTypeDescription,
             value: tranMode.requestTypeDescription,
           }))
         );
@@ -457,7 +457,7 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       if (receiveChannelList && receiveChannelList.length > 0) {
         arr.push(
           ...receiveChannelList.map((channel) => ({
-            Option: channel.channelName,
+            option: channel.channelDescription,
             value: channel.channelDescription,
           }))
         );
