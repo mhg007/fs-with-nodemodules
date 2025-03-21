@@ -6,7 +6,8 @@ import {
   defineUseCaseLoader,
 } from "@teresol-v2/usecase-hoc/utils";
 import helper from "@teresol-v2/usecase-hoc/helper";
-import MegaSet681 from "@teresol-v2/mega-set681";
+// import MegaSet681 from "@teresol-v2/mega-set681";
+import MegaSet681 from "../../MegaSets/MegaSet681.vue";
 import { isEmpty } from "element-plus/es/utils/types.mjs";
 
 
@@ -204,7 +205,8 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
 
     inputLength: ref(0),
-
+    agentName: ref(""),
+    agentType: ref(""),
     AccountNumber: ref(""),
     IBANNumberValue: ref(""),
     ePRCNumberValue: ref(""),
@@ -262,7 +264,14 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
 
     tableData: ref(''),
 
-
+    addState() {
+      const data = {
+        "id":Date.now(),
+        "agentName":this.ms681.agentName.value,
+        "agentType":this.ms681.agentType.value
+      };
+      console.log(data);
+    },
     clearState() {
       console.debug("When clear state function is calling to clear fields")
 
@@ -369,7 +378,14 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         console.debug("Value Of Branch Code when length is greater than 0 : ", ms681.branchCodeValue.value);
       }
     },
-
+    setAgentName(value) {
+      ms681.agentName.value = value ?? "";
+      console.log(value);
+    },
+    setAgentType(value) {
+      ms681.agentType.value = value ?? "";
+      console.log(value);
+    },
     setFromDate(value) {
       ms681.fromDate.value = value ?? "";
       console.debug("ms681.fromDate: ", ms681.fromDate.value);
@@ -632,6 +648,42 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         ModeofTransList: ms681.ModeofTransList,
         defaultValue: ms681.modeDefaultValue,
       },
+      AgentNameTextBox: {
+        isVisible: true,
+        isDisabled: false,
+        inputColor: "black",
+        labelColor: "black",
+        mandatory: true,
+        //placeholder: "Agent Name",
+        AgentName: ms681.agentName,
+        dataType: "String",
+        inputLength: ref(20),
+        label: "Agent Name",
+        mandatory: true,
+      },
+      AgentTypeDropDown:{
+        isVisible: true,
+        isDisabled: false,
+        inputColor: "black",
+        labelColor: "black",
+        mandatory: true,
+        placeholder: "Agent Type",
+        AgentType: ms681.agentType,
+        dataType: "String",
+        inputLength: ref(20),
+        dropDownLabel: "Agent Type",
+        mandatory: true,
+        AgentTypeDropDownList:[
+          {
+            value:"EZREMIT",
+            option:"EZREMIT"
+          },
+          {
+            value:"INSCASH",
+            option:"INSCASH"
+          },
+        ]
+      },
       TransactionRadioButton: {
         spanLabels: ref(5),
         isDisabled: ref(false),
@@ -812,6 +864,10 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         isDisabled: ref(false),
         isVisible: ref(true),
       },
+      AddButton: {
+        isDisabled: ref(false),
+        isVisible: ref(true),
+      },
       ClearButton: {
         isDisabled: ref(false),
         isVisible: ref(true),
@@ -962,7 +1018,8 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
         helper.alert(error);
       }
     },
-
+    "AgentNameTextBox-onBlur":ms681.setAgentName,
+    "AgentTypeDropDown-onChange":ms681.setAgentType,
     "IbanBahlAlphaNumeric24-onBlur": ms681.setIBANNumber,
     "branchCodeTextBox-onBlur": ms681.setbranchCode,
     "ToDatePicker-onChange": ms681.setToDate,
@@ -1096,6 +1153,21 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
       console.debug("Clear Button Click ")
       try {
         ms681.clearState();
+      } catch (error) {
+        helper.alert(error)
+      }
+    },
+
+    async "AddButton-onClick"() {
+      console.log("Add Button Click ")
+      try {
+        const request = {
+          "id":Date.now(),
+          "agentName":ms681.agentName.value,
+          "agentType":ms681.agentType.value
+        };
+        const res = await fsm.post("ADD",{request});
+        console.log("response",res);
       } catch (error) {
         helper.alert(error)
       }
@@ -1239,6 +1311,8 @@ function hocSetup(props, { attrs, slots, emit, expose }) {
           const request = {
             certificateTypeId: 2,
             requestTypeId: ms681.requestTypeId.value,
+            agentName:ms681.agentName.value,
+            agentType:ms681.agentType.value,
             accountNumber: removeHyphens(ms681.AccountNumber.value),
             iban: removeHyphens(ms681.IBANNumberValue.value),
             idDocumentType: ms681.identificationEnum.value ? ms681.identificationEnum.value : 0,

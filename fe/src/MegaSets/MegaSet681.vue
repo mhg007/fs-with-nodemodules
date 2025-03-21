@@ -6,6 +6,42 @@
     <el-row>
       <el-col :lg="1" :md="1"></el-col>
       <el-col :lg="23" :md="23">
+        <AgentNameTextBox
+          @GenericTextBox-onBlur="
+            (val) => {
+              $emit('AgentNameTextBox-onBlur', val);
+            }
+          "
+          v-bind="{ ...AgentNameTextBox, ...configObject.AgentNameTextBox }"
+          :values="configObject.AgentNameTextBox.AgentName"
+          ref="RefAgentNameTextBox"
+          name="AgentNameTextBox"
+          v-if="configObject.AgentNameTextBox.isVisible"
+        />
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :lg="1" :md="1"></el-col>
+      <el-col :lg="23" :md="23">
+        <AgentTypeDropDown
+          @GenericDropDown-onChange="
+            (val) => {
+              $emit('AgentTypeDropDown-onChange', val);
+            }
+          "
+          v-bind="{ ...AgentTypeDropDown, ...configObject.AgentTypeDropDown }"
+          :values="configObject.AgentTypeDropDown.AgentTypeDropDownList"
+          ref="RefAgentTypeDropDown"
+          name="AgentTypeDropDown"
+          v-if="configObject.AgentNameTextBox.isVisible"
+        />
+      </el-col>
+    </el-row>
+    
+    <el-row>
+      <el-col :lg="1" :md="1"></el-col>
+      <el-col :lg="23" :md="23">
         <ModeofTransDropDown @GenericDropDown-onChange="(val) => {
       $emit('ModeofTransDropDown-onChange', val);
     }
@@ -191,11 +227,15 @@
       </el-col>
       <el-col :lg="1" :md="1"></el-col>
       <el-col :lg="2" :md="2">
+        <AddButton @GenericButton-onClick="$emit('AddButton-onClick')" name="AddButton" ref="RefAddButton"
+          v-bind="{ ...AddButton, ...configObject.AddButton }" v-if="configObject.SearchButton.isVisible" />
+      </el-col>
+      <el-col :lg="1" :md="1"></el-col>
+      <el-col :lg="2" :md="2">
         <SearchButton @GenericButton-onClick="$emit('SearchButton-onClick')" name="SearchButton" ref="RefSearchButton"
           v-bind="{ ...SearchButton, ...configObject.SearchButton }" v-if="configObject.SearchButton.isVisible" />
       </el-col>
-      <el-col :lg="1" :md="1"></el-col>
-      <el-col :lg="13" :md="13"></el-col>
+      <el-col :lg="4" :md="4"></el-col>
       <el-col :lg="2" :md="2">
         <BackButton @GenericButton-onClick="$emit('BackButton-onClick')" name="BackButton" ref="RefExitButton"
           v-bind="{ ...BackButton, ...configObject.BackButton }" v-if="configObject.BackButton.isVisible" />
@@ -261,6 +301,8 @@
 import { reactive, ref } from "vue";
 import { Form, useForm } from "vee-validate";
 import {
+  GenericTextBox as AgentNameTextBox,
+  GenericDropDown as AgentTypeDropDown,
   GenericDropDown as ModeofTransDropDown,
   GenericDropDown as channelDropDown,
   GenericDropDown as identificationDocType,
@@ -277,6 +319,7 @@ import {
   GenericDatePicker as FromDatePicker,
   GenericDatePicker as ToDatePicker,
   GenericButton as ClearButton,
+  GenericButton as AddButton,
   GenericButton as SearchButton,
   GenericButton as BackButton,
   GenericButton as DownloadButton,
@@ -289,6 +332,9 @@ export default {
   name: "MegaSet681",
   components: {
     Form,
+    AgentNameTextBox,
+    AgentTypeDropDown,
+    AddButton,
     ModeofTransDropDown,
     channelDropDown,
     identificationDocType,
@@ -405,7 +451,30 @@ export default {
         inputLength: ref(17),
         dataType: "String",
       },
-
+      AgentNameTextBox: {
+        labelFontWeight: "bold",
+        isVisible: true,
+        spanInputs: ref(6),
+        spanLabels: ref(6),
+        inputLength: ref(17),
+        dataType: "String",
+        backgroundColor: "white",
+        defaultValue: "select",
+        colorinput: "grey",
+        colorLabel: "black",
+      },
+      AgentTypeDropDown: {
+        labelFontWeight: "bold",
+        isVisible: true,
+        spanInputs: ref(6),
+        spanLabels: ref(6),
+        inputLength: ref(17),
+        dataType: "String",
+        backgroundColor: "white",
+        defaultValue: "select",
+        colorinput: "grey",
+        colorLabel: "black",
+      },
       accountNumberTextBox: {
         labelFontWeight: "bold",
         label: "Account Number *",
@@ -515,6 +584,13 @@ export default {
         nativeType: ref("button"),
         spanInputs: ref(24),
         label: ref("Exit"),
+      },
+      AddButton: {
+        isVisible: true,
+        nativeType: ref("button"),
+        spanInputs: ref(24),
+        label: ref("Add"),
+        backgroundColor: "white",
       },
       ePRCTable: {
         isVisible: true,

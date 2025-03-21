@@ -44,8 +44,9 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
           INIT: {
             actions: [
               "receiveHeader",
+              "sendPartialCtx",
             ],
-            target: "FetchTransMode",
+            target: "MegaSet681",
           },
         },
       },
@@ -247,6 +248,14 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
           BACK: {
             target: "Final",
           },
+          ADD:{
+            actions: [
+              "receiveAgentParameters",
+              "loadAgent",
+              "sendPartialCtx"
+            ],
+            target:"MegaSet681"
+          },
           KILL: {
             target: "Final",
           },
@@ -345,6 +354,13 @@ const TLR_EPRC_SPRC_INQ_UC3_RPT_EPRC = createMachine(
           }
 
           logger.info("Searching Request Payload : "+ JSON.stringify(request));
+          return request;
+        },
+      }),
+      receiveEprcAddParameters: assign({
+        eprcSearchParameters: (context, event) => {
+          const request = {};
+          logger.info("Adding Request Payload : "+ JSON.stringify(request));
           return request;
         },
       }),
